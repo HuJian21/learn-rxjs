@@ -1,0 +1,66 @@
+<!-- 基本版本的搜索 -->
+<input id="text"></input>
+<script>
+    var text = document.querySelector('#text');
+    text.addEventListener('keyup', (e) =>{
+        var searchText = e.target.value;
+        // 发送输入内容到后台
+        $.ajax({
+            url: `search.jdb.com/${searchText}`,
+            success: data => {
+              // 拿到后台返回数据，并展示搜索结果
+              render(data);
+            }
+        });
+    });
+</script>
+
+<!-- 减少请求频率 -->
+<input id="text"></input>
+<script>
+    var text = document.querySelector('#text'),
+        timer = null;
+    text.addEventListener('keyup', (e) =>{
+        // 在 250 毫秒内进行其他输入，则清除上一个定时器
+        clearTimeout(timer);
+        // 定时器，在 250 毫秒后触发
+        timer = setTimeout(() => {
+            console.log('发起请求..');
+        },250)
+    })
+</script>
+
+
+<!-- 解决竞态问题 -->
+<input id="text"></input>
+<script>
+    var text = document.querySelector('#text'),
+        currentSearch = '';
+    text.addEventListener('keyup', (e) =>{
+        // 声明一个当前所搜的标识
+        currentSearch = 'mark'; 
+        var searchText = e.target.value;
+        $.ajax({
+            url: `search.com/${searchText}`,
+            success: data => {
+                // 判断服务端返回的标识与我们存的标识是否一致
+                if (data.search === currentSearch) {
+                    // 渲染
+                    render(data);
+                }
+            }           
+        });
+    })
+</script>
+
+
+
+    <!-- var text = document.querySelector('#text');
+    Rx.Observable.fromEvent(text, 'keyup')  // 从事件中创建Observable
+                 .debounceTime(250) // 等待250ms
+                 .pluck('target', 'value')  // 将event，输出为 event.target.value
+                 .switchMap(url => Http.get(url)) // switchMap操作符取消上一个请求
+                 .subscribe(data => render(data))  // 订阅并渲染视图 -->
+
+                 
+</script>
